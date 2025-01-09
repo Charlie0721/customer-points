@@ -22,17 +22,21 @@
     "typeorm:create": "typeorm-ts-node-commonjs migration:create -d db/datasource.ts",
     "typeorm:run": "typeorm-ts-node-commonjs migration:run -d db/datasource.ts",
     "typeorm:revert": "typeorm-ts-node-commonjs migration:revert -d db/datasource.ts"
-   },
+  },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/swagger": "^8.1.0",
     "@nestjs/typeorm": "^10.0.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "pg": "^8.13.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
+    "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {

@@ -1,11 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { ServiceInterface } from 'src/commons/service-interface.commons';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Customer } from './entities/customer.entity';
+import { QueryRunner, Repository } from 'typeorm';
+import { CustomerPoints } from './entities/customer-points.entity';
 
 @Injectable()
 export class CustomersService {
-  create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
+
+   private queryRunner: QueryRunner
+  public constructor(
+    @InjectRepository(Customer)
+    private readonly customerRepository: Repository<Customer>,
+    @InjectRepository(CustomerPoints)
+    private readonly customerPointsrepository: Repository<CustomerPoints>,
+  ) {}
+  public async create(
+    nit: string,
+    name: string,
+    points: number,
+  ): Promise<ServiceInterface> {
+    try {
+      
+      return {
+        data: {
+          nit,
+          name,
+          points,
+        },
+      };
+    } catch (error) {
+      return {
+        data: error.message,
+        error: true,
+      };
+    }
   }
 
   findAll() {

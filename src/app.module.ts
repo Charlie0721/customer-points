@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import * as dotenv from 'dotenv';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomersModule } from './customers/customers.module';
+import { RedemptionsModule } from './redemptions/redemptions.module';
 dotenv.config();
 @Module({
   imports: [
@@ -27,8 +26,9 @@ dotenv.config();
       }),
     }),
     CustomersModule,
+    RedemptionsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

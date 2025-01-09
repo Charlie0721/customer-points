@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { CustomerPoints } from './customer-points.entity';
+import { Redemptions } from '../../redemptions/entities/redemption.entity';
 
 @Entity('customers')
 export class Customer {
@@ -14,5 +15,9 @@ export class Customer {
 
   @OneToMany(() => CustomerPoints, (points) => points.customer)
   customerPoints: CustomerPoints[];
+
+  @OneToMany(() => Redemptions, (redemption) => redemption.customer)
+  redemptions: Redemptions[];
+
 }
 
