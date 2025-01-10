@@ -84,13 +84,68 @@ export class CustomersService {
   findAll() {
     return `This action returns all customers`;
   }
+  /**
+   * @description Metodo encargado de buscar cliente por el nit proporcionado
+   * @param nit
+   * @returns data, error o null
+   */
+  public async findOne(nit: string): Promise<ServiceInterface> {
+    try {
+      const customerFound = await this.customerRepository.findOne({
+        where: { nit },
+      });
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+      return {
+        data: customerFound,
+      };
+    } catch (error) {
+      return {
+        error: true,
+        data: error.message,
+      };
+    }
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
+  public async findPointsByCustomerId(
+    customerId: number,
+  ): Promise<ServiceInterface> {
+    try {
+      const customerPoints = await this.customerPointsrepository.findOne({
+        where: { customer_id: customerId },
+      });
+
+      return {
+        data: customerPoints,
+      };
+    } catch (error) {
+      return {
+        error: true,
+        data: error.message,
+      };
+    }
+  }
+
+  public async updatePoints(
+    id: number,
+    totalPoints: number,
+  ): Promise<ServiceInterface> {
+    try {
+      const customerPoints = await this.customerPointsrepository.update(id, {
+        points: totalPoints,
+      });
+      return {
+        data: {
+          customerPoints,
+          id,
+          totalPoints,
+        },
+      };
+    } catch (error) {
+      return {
+        error: true,
+        data: error.message,
+      };
+    }
   }
 
   remove(id: number) {

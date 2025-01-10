@@ -12,7 +12,7 @@ export class CreateCustomerDto {
 
   @IsString()
   @IsNotEmpty()
-  @Length(1, 100)
+  @Length(3, 100)
   @ApiProperty({ description: 'Nombre del cliente' })
   readonly name: string;
   
