@@ -8,12 +8,17 @@ import { Redemptions } from '../redemptions/entities/redemption.entity';
 import { CreateCustomerUseCase } from './use-cases/create-customer.use-case';
 import { UpdatePointsUseCase } from './use-cases/update-customer-points.use-case';
 import { FindCustomerUseCase } from './use-cases/find-customer.use-case';
+import { FindPointByCustomerUseCase } from './use-cases/find-points-by-customer.use-case';
 
 @Module({
-  imports:[
-    TypeOrmModule.forFeature([Customer,CustomerPoints,Redemptions])
-  ],
+  imports: [TypeOrmModule.forFeature([Customer, CustomerPoints, Redemptions])],
   controllers: [CustomersController],
-  providers: [CustomersService,CreateCustomerUseCase,UpdatePointsUseCase,FindCustomerUseCase]
+  providers: [
+    CustomersService,
+    CreateCustomerUseCase,
+    UpdatePointsUseCase,
+    FindCustomerUseCase,
+    FindPointByCustomerUseCase,
+  ],
 })
 export class CustomersModule {}

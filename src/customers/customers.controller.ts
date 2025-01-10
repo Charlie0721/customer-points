@@ -3,19 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Res,
   HttpStatus,
 } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Response } from 'express';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CreateCustomerUseCase } from './use-cases/create-customer.use-case';
 import { FindCustomerUseCase } from './use-cases/find-customer.use-case';
 import { UpdatePointsUseCase } from './use-cases/update-customer-points.use-case';
+import { FindPointByCustomerUseCase } from './use-cases/find-points-by-customer.use-case';
 @ApiTags('Customers')
 @Controller('customers')
 export class CustomersController {
@@ -23,6 +21,7 @@ export class CustomersController {
     private readonly createCustomerUseCase: CreateCustomerUseCase,
     private readonly findCustomerUseCase: FindCustomerUseCase,
     private readonly updatePointsUseCase: UpdatePointsUseCase,
+    private readonly findPointByCustomerUseCase: FindPointByCustomerUseCase,
   ) {}
 
   @Post()
@@ -71,26 +70,33 @@ export class CustomersController {
     }
   }
 
-  @Get()
-  findAll() {
-    //return this.customersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    //return this.customersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCustomerDto: UpdateCustomerDto,
+  @Get(':nit')
+  @ApiOperation({
+    summary: 'Consultar el total de puntos por cliente',
+  })
+  @ApiParam({
+    name: 'nit',
+    description: 'Nit del cliente',
+    required: true,
+  })
+  public async findTotalPointsByCustomer(
+    @Res() res: Response,
+    @Param('nit') nit: string,
   ) {
-    //return this.customersService.update(+id, updateCustomerDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    //return this.customersService.remove(+id);
+    const { success, data, message, errors } =
+      await this.findPointByCustomerUseCase.main(nit);
+    if (message === 'Cliente encontrado exitosamente') {
+      if (success) {
+        return res.status(HttpStatus.OK).send({ success, data, message });
+      } else {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .send({ success, message, errors });
+      }
+    } else {
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .send({ success, message, errors });
+    }
   }
 }

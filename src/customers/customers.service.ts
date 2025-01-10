@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { ServiceInterface } from 'src/commons/service-interface.commons';
+import { ServiceInterface } from '../commons/service-interface.commons';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { QueryRunner, Repository } from 'typeorm';
@@ -148,7 +146,27 @@ export class CustomersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  public async findPointsByCustomer(nit: string): Promise<ServiceInterface> {
+    try {
+      const _pointsByCustomer = await this.customerRepository
+        .createQueryBuilder('customer')
+        .leftJoinAndSelect('customer.customerPoints', 'customerPoints')
+        .select([
+          'customer.id as id',
+          'customer.name as name',
+          'customer.nit as nit',
+          'customerPoints.points as total_points',
+        ])
+        .where('customer.nit = :nit', { nit })
+        .getRawOne();
+      return {
+        data: _pointsByCustomer,
+      };
+    } catch (error) {
+      return {
+        error: true,
+        data: error.message,
+      };
+    }
   }
 }
