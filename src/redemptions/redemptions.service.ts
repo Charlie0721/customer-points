@@ -1,26 +1,67 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRedemptionDto } from './dto/create-redemption.dto';
-import { UpdateRedemptionDto } from './dto/update-redemption.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Redemptions } from './entities/redemption.entity';
+import { Repository } from 'typeorm';
+import { ServiceInterface } from '../commons/service-interface.commons';
+import { Customer } from '../customers/entities/customer.entity';
 
 @Injectable()
 export class RedemptionsService {
-  create(createRedemptionDto: CreateRedemptionDto) {
-    return 'This action adds a new redemption';
+  public constructor(
+    @InjectRepository(Redemptions)
+    private readonly redemptionRepository: Repository<Redemptions>,
+    @InjectRepository(Customer)
+    private readonly customerRepository: Repository<Customer>,
+  ) {}
+  /**
+   * @description Metodo encargado de insertar en la tabla redemption la data de los puntos cambiados
+   * @param customerId
+   * @param pointsToRedeem
+   * @returns error o data
+   */
+  public async create(
+    customerId: number,
+    pointsToRedeem: number,
+  ): Promise<ServiceInterface> {
+    try {
+      const newRedemption = this.redemptionRepository.create({
+        customer_id: customerId,
+        points: pointsToRedeem,
+      });
+
+      const _redeemed = await this.redemptionRepository.save(newRedemption);
+      return {
+        data: {
+          redeemed: _redeemed,
+        },
+      };
+    } catch (error) {
+      return {
+        error: true,
+        data: error.message,
+      };
+    }
   }
 
-  findAll() {
-    return `This action returns all redemptions`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} redemption`;
-  }
-
-  update(id: number, updateRedemptionDto: UpdateRedemptionDto) {
-    return `This action updates a #${id} redemption`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} redemption`;
+  public async findTransactionsByCustomer(
+    nit: string,
+  ): Promise<ServiceInterface> {
+    try {
+      const _transactios = await this.customerRepository
+        .createQueryBuilder('customer')
+        .innerJoinAndSelect('customer.redemptions', 'redemption')
+        .where('customer.nit = :nit', { nit })
+        .getRawMany();
+      return {
+        data: {
+          transactions: _transactios,
+        },
+      };
+    } catch (error) {
+      return {
+        error: true,
+        data: error.message,
+      };
+    }
   }
 }

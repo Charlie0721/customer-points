@@ -20,5 +20,6 @@ import { FindPointByCustomerUseCase } from './use-cases/find-points-by-customer.
     FindCustomerUseCase,
     FindPointByCustomerUseCase,
   ],
+  exports: [CustomersService],
 })
 export class CustomersModule {}

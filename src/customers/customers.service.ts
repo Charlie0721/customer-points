@@ -61,7 +61,13 @@ export class CustomersService {
       await this.queryRunner.release();
     }
   }
-
+/**
+ * @description Metodo privado encargado de guardar los puntos por clientes
+ * @param queryRunner 
+ * @param customerId 
+ * @param points 
+ * @returns {CustomerPoints}
+ */
   private async saveCustomerPoints(
     queryRunner: QueryRunner,
     customerId: number,
@@ -79,9 +85,6 @@ export class CustomersService {
     return savedCustomerPoints;
   }
 
-  findAll() {
-    return `This action returns all customers`;
-  }
   /**
    * @description Metodo encargado de buscar cliente por el nit proporcionado
    * @param nit
@@ -103,7 +106,11 @@ export class CustomersService {
       };
     }
   }
-
+/**
+ * @description Metodo que busca los puntos por id 
+ * @param customerId 
+ * @returns error o data
+ */
   public async findPointsByCustomerId(
     customerId: number,
   ): Promise<ServiceInterface> {
@@ -122,7 +129,12 @@ export class CustomersService {
       };
     }
   }
-
+/**
+ * @description Metodo encargado de actualizar los puntos por cliente 
+ * @param id 
+ * @param totalPoints 
+ * @returns errro o data
+ */
   public async updatePoints(
     id: number,
     totalPoints: number,
@@ -145,7 +157,11 @@ export class CustomersService {
       };
     }
   }
-
+/**
+ * @description Metodo encargado de buscar por nit de cliente, la cantidad de puntos que posee 
+ * @param nit 
+ * @returns error o data
+ */
   public async findPointsByCustomer(nit: string): Promise<ServiceInterface> {
     try {
       const _pointsByCustomer = await this.customerRepository

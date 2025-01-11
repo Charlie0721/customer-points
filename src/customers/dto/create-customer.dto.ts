@@ -4,7 +4,7 @@ import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 export class CreateCustomerDto {
   @IsString()
   @IsNotEmpty()
-  @Length(5, 20)
+  @Length(1, 20)
   @ApiProperty({
     description: 'Número de identificación tributaria del cliente',
   })
