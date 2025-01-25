@@ -16,35 +16,65 @@ export class CreatePointsRedemptionUseCase {
   ): Promise<ApiResponse<any>> {
     try {
       const customerPoints = await this.searchCustomerPoints(customerId);
-      if (customerPoints.points <= 0) {
-        return new ApiResponse(
-          false,
-          null,
-          `No tiene puntos disponibles por redimir !`,
+
+      const pointsArray = Array.isArray(customerPoints)
+        ? customerPoints
+        : [customerPoints];
+    
+        const validPoints = pointsArray.filter((point) => {
+          return (
+            !point.expiration_date || new Date(point.expiration_date) >= new Date()
+          );
+        });
+  
+      
+        const validPointsTotal = validPoints.reduce(
+          (total, point) => total + point.points,
+          0,
         );
-      }
-
-      if (customerPoints.points < pointsToRedeem) {
-        return new ApiResponse(
-          false,
-          null,
-          `No tiene suficientes puntos por redimir solamente puede cambiar ${customerPoints.points} puntos máximo !`,
+  
+      
+        if (validPointsTotal < pointsToRedeem) {
+          return new ApiResponse(
+            false,
+            null,
+            `No tiene suficientes puntos válidos para redimir. Solo tiene ${validPointsTotal} puntos disponibles.`,
+          );
+        }
+  
+        let pointsRemaining = pointsToRedeem;
+        let totalPointsRedeemed = 0; // Variable para llevar el conteo de los puntos redimidos
+  
+      
+        for (const point of validPoints) {
+          if (pointsRemaining <= 0) break;
+  
+          const pointsToRedeemNow = Math.min(pointsRemaining, point.points);
+          pointsRemaining -= pointsToRedeemNow;
+          totalPointsRedeemed += pointsToRedeemNow; // Acumular los puntos redimidos
+  
+        
+          await this.customersService.updatePoints(
+            point.id,
+            point.points - pointsToRedeemNow,
+          );
+  
+        
+          await this.registerKardexEntry(
+            customerId,
+            point.points,
+            point.points - pointsToRedeemNow,
+            pointsToRedeemNow,
+            'redemption',
+            point.expiration_date,
+          );
+        }
+  
+      
+        const { data, error } = await this.redemptionsService.create(
+          customerId,
+          totalPointsRedeemed, 
         );
-      }
-
-      const pointsRedeemed = this.subtractPoints(
-        customerPoints.points,
-        pointsToRedeem,
-      );
-
-      const { data, error } = await this.redemptionsService.create(
-        customerPoints.customer_id,
-        pointsToRedeem,
-      );
-      await this.customersService.updatePoints(
-        customerPoints.id,
-        pointsRedeemed,
-      );
       return new ApiResponse(true, data, 'Datos creados satisfactoriamente !');
     } catch (error) {
       return new ApiResponse(
@@ -69,5 +99,27 @@ export class CreatePointsRedemptionUseCase {
     pointsToRedeem: number,
   ): number {
     return currentPoints - pointsToRedeem;
+  }
+  private async registerKardexEntry(
+    customerId: number,
+    previousPoints: number,
+    newPoints: number,
+    points: number,
+    transactionType: 'acquisition' | 'redemption',
+    expirationDate: Date,
+  ): Promise<void> {
+    const difference = newPoints - previousPoints;
+
+    const kardexEntry = {
+      customer_id: customerId,
+      previous_points: previousPoints,
+      new_points: newPoints,
+      difference: difference,
+      reason: `Puntos ${transactionType}`,
+      transaction_type: transactionType,
+      expiration_date: expirationDate,
+    };
+
+    await this.customersService.createKardex(kardexEntry);
   }
 }

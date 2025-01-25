@@ -36,7 +36,7 @@ export class CustomersController {
     @Res() response: Response,
     @Body() createCustomerDto: CreateCustomerDto,
   ) {
-    const { nit, name, points } = createCustomerDto;
+    const { nit, name, points,expiration_days } = createCustomerDto;
     const normalizedNit = nit.trim();
     const {
       data: customer,
@@ -46,7 +46,7 @@ export class CustomersController {
     } = await this.findCustomerUseCase.main(normalizedNit);
     if (customer_message === 'Cliente encontrado exitosamente') {
       const { success, data, message, errors } =
-        await this.updatePointsUseCase.main(customer.id, points);
+        await this.updatePointsUseCase.main(customer.id, points, expiration_days);
       if (success) {
         return response.status(HttpStatus.OK).send({ success, data, message });
       } else {
@@ -57,7 +57,7 @@ export class CustomersController {
     }
     if (customer === null) {
       const { success, data, message, errors } =
-        await this.createCustomerUseCase.main(nit, name, points);
+        await this.createCustomerUseCase.main(nit, name, points, expiration_days);
       if (success) {
         return response
           .status(HttpStatus.CREATED)

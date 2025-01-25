@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { QueryRunner, Repository } from 'typeorm';
 import { CustomerPoints } from './entities/customer-points.entity';
+import { CustomerPointsKardex } from './entities/customer-points-kardex';
 
 @Injectable()
 export class CustomersService {
@@ -13,6 +14,8 @@ export class CustomersService {
     private readonly customerRepository: Repository<Customer>,
     @InjectRepository(CustomerPoints)
     private readonly customerPointsrepository: Repository<CustomerPoints>,
+    @InjectRepository(CustomerPointsKardex)
+    private readonly customerPointsKardexRepository: Repository<CustomerPointsKardex>,
   ) {}
   /**
    * @description Metodo encargado de guardar la información de los clientes junto con su puntaje inicial
@@ -61,13 +64,13 @@ export class CustomersService {
       await this.queryRunner.release();
     }
   }
-/**
- * @description Metodo privado encargado de guardar los puntos por clientes
- * @param queryRunner 
- * @param customerId 
- * @param points 
- * @returns {CustomerPoints}
- */
+  /**
+   * @description Metodo privado encargado de guardar los puntos por clientes
+   * @param queryRunner
+   * @param customerId
+   * @param points
+   * @returns {CustomerPoints}
+   */
   private async saveCustomerPoints(
     queryRunner: QueryRunner,
     customerId: number,
@@ -106,11 +109,11 @@ export class CustomersService {
       };
     }
   }
-/**
- * @description Metodo que busca los puntos por id 
- * @param customerId 
- * @returns error o data
- */
+  /**
+   * @description Metodo que busca los puntos por id
+   * @param customerId
+   * @returns error o data
+   */
   public async findPointsByCustomerId(
     customerId: number,
   ): Promise<ServiceInterface> {
@@ -129,12 +132,12 @@ export class CustomersService {
       };
     }
   }
-/**
- * @description Metodo encargado de actualizar los puntos por cliente 
- * @param id 
- * @param totalPoints 
- * @returns errro o data
- */
+  /**
+   * @description Metodo encargado de actualizar los puntos por cliente
+   * @param id
+   * @param totalPoints
+   * @returns errro o data
+   */
   public async updatePoints(
     id: number,
     totalPoints: number,
@@ -157,11 +160,11 @@ export class CustomersService {
       };
     }
   }
-/**
- * @description Metodo encargado de buscar por nit de cliente, la cantidad de puntos que posee 
- * @param nit 
- * @returns error o data
- */
+  /**
+   * @description Metodo encargado de buscar por nit de cliente, la cantidad de puntos que posee
+   * @param nit
+   * @returns error o data
+   */
   public async findPointsByCustomer(nit: string): Promise<ServiceInterface> {
     try {
       const _pointsByCustomer = await this.customerRepository
@@ -184,5 +187,17 @@ export class CustomersService {
         data: error.message,
       };
     }
+  }
+/**
+ * @description Metodo encargado de insetar datos en la tabla de kardex cuando se crea o actualiza cliente 
+ * @param kardexEntry 
+ * @returns 
+ */
+  public async createKardex(
+    kardexEntry: Partial<CustomerPointsKardex>,
+  ): Promise<CustomerPointsKardex> {
+    const newKardexEntry =
+      this.customerPointsKardexRepository.create(kardexEntry);
+    return this.customerPointsKardexRepository.save(newKardexEntry);
   }
 }

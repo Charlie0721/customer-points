@@ -35,6 +35,7 @@ export class RedemptionsService {
           redeemed: _redeemed,
         },
       };
+      
     } catch (error) {
       return {
         error: true,

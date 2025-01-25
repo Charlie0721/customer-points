@@ -20,6 +20,9 @@ export class CustomerPoints {
   @Column()
   points: number;
 
+  @Column({ type: 'date', nullable: true }) 
+  expiration_date: Date;
+
   @CreateDateColumn()
   created_at: Date;
 

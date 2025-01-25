@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, Length } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
@@ -20,4 +20,9 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'puntos' })
   readonly points: number;
+  
+  @IsInt()
+  @IsPositive()
+  @ApiProperty({ description: 'Dias para expiración de puntos' })
+  readonly expiration_days: number;
 }

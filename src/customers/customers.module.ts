@@ -9,9 +9,17 @@ import { CreateCustomerUseCase } from './use-cases/create-customer.use-case';
 import { UpdatePointsUseCase } from './use-cases/update-customer-points.use-case';
 import { FindCustomerUseCase } from './use-cases/find-customer.use-case';
 import { FindPointByCustomerUseCase } from './use-cases/find-points-by-customer.use-case';
+import { CustomerPointsKardex } from './entities/customer-points-kardex';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer, CustomerPoints, Redemptions])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Customer,
+      CustomerPoints,
+      Redemptions,
+      CustomerPointsKardex,
+    ]),
+  ],
   controllers: [CustomersController],
   providers: [
     CustomersService,
