@@ -43,7 +43,7 @@ export class CreatePointsRedemptionUseCase {
         }
   
         let pointsRemaining = pointsToRedeem;
-        let totalPointsRedeemed = 0; // Variable para llevar el conteo de los puntos redimidos
+        let totalPointsRedeemed = 0; 
   
       
         for (const point of validPoints) {
@@ -51,12 +51,13 @@ export class CreatePointsRedemptionUseCase {
   
           const pointsToRedeemNow = Math.min(pointsRemaining, point.points);
           pointsRemaining -= pointsToRedeemNow;
-          totalPointsRedeemed += pointsToRedeemNow; // Acumular los puntos redimidos
+          totalPointsRedeemed += pointsToRedeemNow; 
   
         
           await this.customersService.updatePoints(
             point.id,
             point.points - pointsToRedeemNow,
+            point.expiration_date,
           );
   
         

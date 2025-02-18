@@ -27,6 +27,7 @@ export class UpdatePointsUseCase {
       const { data, error } = await this.customersService.updatePoints(
         customerPoints.id,
         totalPoints,
+        expirationDate,
       );
       return new ApiResponse(true, data, 'Puntos actualizados exitosamente !');
     } catch (error) {

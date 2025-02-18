@@ -13,7 +13,7 @@ export class CustomersService {
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
     @InjectRepository(CustomerPoints)
-    private readonly customerPointsrepository: Repository<CustomerPoints>,
+    private readonly customerPointsRepository: Repository<CustomerPoints>,
     @InjectRepository(CustomerPointsKardex)
     private readonly customerPointsKardexRepository: Repository<CustomerPointsKardex>,
   ) {}
@@ -28,6 +28,7 @@ export class CustomersService {
     nit: string,
     name: string,
     points: number,
+    expirationDays: number,
   ): Promise<ServiceInterface> {
     this.queryRunner =
       this.customerRepository.manager.connection.createQueryRunner();
@@ -44,6 +45,7 @@ export class CustomersService {
         this.queryRunner,
         savedCustomer.id,
         points,
+        expirationDays,
       );
       await this.queryRunner.commitTransaction();
       return {
@@ -75,10 +77,15 @@ export class CustomersService {
     queryRunner: QueryRunner,
     customerId: number,
     points: number,
+    expirationDays: number,
   ): Promise<CustomerPoints> {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + expirationDays);
+    
     const newCustomerPoints = queryRunner.manager.create(CustomerPoints, {
       customer_id: customerId,
       points: points,
+      expiration_date: expirationDate,
     });
 
     const savedCustomerPoints = await queryRunner.manager.save(
@@ -118,7 +125,7 @@ export class CustomersService {
     customerId: number,
   ): Promise<ServiceInterface> {
     try {
-      const customerPoints = await this.customerPointsrepository.findOne({
+      const customerPoints = await this.customerPointsRepository.findOne({
         where: { customer_id: customerId },
       });
 
@@ -141,10 +148,12 @@ export class CustomersService {
   public async updatePoints(
     id: number,
     totalPoints: number,
+    expirationDate: Date,
   ): Promise<ServiceInterface> {
     try {
-      const customerPoints = await this.customerPointsrepository.update(id, {
+      const customerPoints = await this.customerPointsRepository.update(id, {
         points: totalPoints,
+        expiration_date: expirationDate,
       });
       return {
         data: {
@@ -188,11 +197,11 @@ export class CustomersService {
       };
     }
   }
-/**
- * @description Metodo encargado de insetar datos en la tabla de kardex cuando se crea o actualiza cliente 
- * @param kardexEntry 
- * @returns 
- */
+  /**
+   * @description Metodo encargado de insetar datos en la tabla de kardex cuando se crea o actualiza cliente
+   * @param kardexEntry
+   * @returns
+   */
   public async createKardex(
     kardexEntry: Partial<CustomerPointsKardex>,
   ): Promise<CustomerPointsKardex> {
@@ -200,4 +209,5 @@ export class CustomersService {
       this.customerPointsKardexRepository.create(kardexEntry);
     return this.customerPointsKardexRepository.save(newKardexEntry);
   }
+ 
 }

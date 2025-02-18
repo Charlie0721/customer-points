@@ -27,7 +27,7 @@ export class CustomerPoints {
   created_at: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at?: Date;
 
   @ManyToOne(() => Customer, (customer) => customer.customerPoints, {
     onDelete: 'CASCADE',

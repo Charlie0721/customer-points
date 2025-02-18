@@ -17,6 +17,7 @@ export class CreateCustomerUseCase {
         nit,
         name,
         points,
+        expirationDays,
       );
       const expirationDate = this.calculateExpirationDate(expirationDays);
       await this.registerKardexEntry(
