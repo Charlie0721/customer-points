@@ -24,7 +24,7 @@ export class CreateCustomerPointsTable1677881234567 implements MigrationInterfac
           { name: 'id', type: 'serial', isPrimary: true },
           { name: 'customer_id', type: 'int' },
           { name: 'points', type: 'int' },
-          { name: 'expiration_date', type: 'date', isNullable: true }, // Nuevo campo para vigencia
+          { name: 'expiration_date', type: 'date', isNullable: false }, 
           { name: 'created_at', type: 'timestamp', default: 'now()' },
           { name: 'updated_at', type: 'timestamp', default: 'now()' },
         ],
