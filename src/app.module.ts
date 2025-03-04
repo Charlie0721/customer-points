@@ -20,7 +20,7 @@ dotenv.config();
         database: process.env.DB_DATABASE,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
-        synchronize: false, // Desactivado para evitar modificaciones automáticas
+        synchronize: true, // Desactivado para evitar modificaciones automáticas
         autoLoadEntities: true,
         logging: true,
       }),
