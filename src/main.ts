@@ -20,11 +20,11 @@ async function bootstrap() {
         forbidNonWhitelisted: true, 
         transform: true, 
       }),
-    );
+    ); 
   const logger = new Logger();
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3100); 
-  await app.listen(3100);
+  await app.listen(port);
   logger.log('server is listening on port:' + port)
 
 }
