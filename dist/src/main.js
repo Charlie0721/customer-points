@@ -22,7 +22,7 @@ async function bootstrap() {
     const logger = new common_1.Logger();
     const configService = app.get(config_1.ConfigService);
     const port = configService.get('PORT', 3100);
-    await app.listen(port);
+    await app.listen(process.env.PORT || 3100);
     logger.log('server is listening on port:' + port);
 }
 bootstrap();
