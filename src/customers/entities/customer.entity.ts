@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { CustomerPoints } from './customer-points.entity';
 import { Redemptions } from '../../redemptions/entities/redemption.entity';
 import { CustomerPointsKardex } from './customer-points-kardex';
@@ -13,6 +13,12 @@ export class Customer {
 
   @Column()
   name: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at?: Date;
 
   @OneToMany(() => CustomerPoints, (points) => points.customer)
   customerPoints: CustomerPoints[];
