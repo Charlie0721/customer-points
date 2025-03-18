@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateCustomerPointsTable1677881234567 = void 0;
+exports.CreateCustomerPointsTable1677881234568 = void 0;
 const typeorm_1 = require("typeorm");
-class CreateCustomerPointsTable1677881234567 {
+class CreateCustomerPointsTable1677881234568 {
     async up(queryRunner) {
         await queryRunner.createTable(new typeorm_1.Table({
             name: 'customers',
@@ -81,5 +81,5 @@ class CreateCustomerPointsTable1677881234567 {
         await queryRunner.dropTable('customers');
     }
 }
-exports.CreateCustomerPointsTable1677881234567 = CreateCustomerPointsTable1677881234567;
+exports.CreateCustomerPointsTable1677881234568 = CreateCustomerPointsTable1677881234568;
 //# sourceMappingURL=12345678.migrations.js.map

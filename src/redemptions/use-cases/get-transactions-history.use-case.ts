@@ -29,15 +29,17 @@ export class TransactionsHistoryUseCase {
       );
     }
   }
-  private parseData(data: any): { responseTransaction: TResponseTransaction } {
+  private parseData(data: TResponseTransaction): { responseTransaction: TResponseTransaction } {
     let responseTransaction: TResponseTransaction = {
       transactions: [],
       totalPointsReeedemed: 0,
+      totalPoints: 0,
     };
 
     for (const transaction of data.transactions) {
       responseTransaction.transactions.push(transaction);
       responseTransaction.totalPointsReeedemed += transaction.redemption_points;
+      responseTransaction.totalPoints = transaction.customerPoints_points;
     }
 
     return { responseTransaction };

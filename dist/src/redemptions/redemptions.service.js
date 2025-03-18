@@ -45,14 +45,28 @@ let RedemptionsService = class RedemptionsService {
     }
     async findTransactionsByCustomer(nit) {
         try {
-            const _transactios = await this.customerRepository
+            const _transactions = await this.customerRepository
                 .createQueryBuilder('customer')
                 .innerJoinAndSelect('customer.redemptions', 'redemption')
+                .innerJoinAndSelect('customer.customerPoints', 'customerPoints')
+                .select([
+                'redemption.points',
+                'redemption.redeemed_at',
+                'customerPoints.points',
+            ])
                 .where('customer.nit = :nit', { nit })
+                .orderBy('redemption.redeemed_at', 'ASC')
                 .getRawMany();
+            const transactionsWithLocalTime = _transactions.map((transaction) => {
+                const utcDate = new Date(transaction.redemption_redeemed_at);
+                const colombiaTimeOffset = -5 * 60;
+                const localDate = new Date(utcDate.getTime() + colombiaTimeOffset * 60 * 1000);
+                const localDateString = localDate.toISOString();
+                return Object.assign(Object.assign({}, transaction), { redemption_redeemed_at: localDateString });
+            });
             return {
                 data: {
-                    transactions: _transactios,
+                    transactions: transactionsWithLocalTime,
                 },
             };
         }

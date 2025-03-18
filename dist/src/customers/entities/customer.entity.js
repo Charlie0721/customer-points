@@ -29,6 +29,14 @@ __decorate([
     __metadata("design:type", String)
 ], Customer.prototype, "name", void 0);
 __decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Customer.prototype, "created_at", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], Customer.prototype, "updated_at", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => customer_points_entity_1.CustomerPoints, (points) => points.customer),
     __metadata("design:type", Array)
 ], Customer.prototype, "customerPoints", void 0);
