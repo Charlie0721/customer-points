@@ -68,15 +68,12 @@ export class RedemptionsService {
         const localDate = new Date(
           utcDate.getTime() + colombiaTimeOffset * 60 * 1000,
         );
-
         const localDateString = localDate.toISOString(); 
-
         return {
           ...transaction,
           redemption_redeemed_at: localDateString, 
         };
       });
-
       return {
         data: {
           transactions: transactionsWithLocalTime,
